@@ -20,9 +20,27 @@ const schema = a.schema({
       amount: a.integer(),
       closeDate: a.date(),
       accountId: a.string(),
-
+      customerId: a.id(),
+      customer: a.belongsTo("Customer", 'customerId'),
     })
-    .authorization(allow => [allow.owner()]),
+    .secondaryIndexes((index) => [
+      index("accountId")
+        .sortKeys(["name"]),
+    ])
+    .authorization(allow => [allow.authenticated()]),
+  // .authorization(allow => [allow.publicApiKey()])
+  Customer: a.model({
+    name: a.string(),
+    email: a.email(),
+    phone: a.phone(),
+    opportunities: a.hasMany("Opportunity", 'customerId')
+  })
+  .secondaryIndexes((index) => [
+    index("name")
+      .sortKeys(["email"]),
+  ])
+    .authorization(allow => [allow.authenticated()]),
+  // .authorization(allow => [allow.owner()]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
