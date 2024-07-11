@@ -12,12 +12,12 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import { Link } from 'react-router-dom';
 
 
-interface MyAppBarProps {
+interface NavBarProps {
     username?: string;
     onLogout?: () => void;
 }
 
-const MyAppBar: React.FC<MyAppBarProps> = ({ username, onLogout }) => {
+const NavBar: React.FC<NavBarProps> = ({ username, onLogout }) => {
     const [leftAnchorEl, setLeftAnchorEl] = useState<null | HTMLElement>(null);
     const [rightAnchorEl, setRightAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -61,9 +61,26 @@ const MyAppBar: React.FC<MyAppBarProps> = ({ username, onLogout }) => {
                     <MenuItem onClick={handleLeftMenuClose}>Customers</MenuItem>
                     <MenuItem onClick={handleLeftMenuClose}>Contacts</MenuItem>
                 </Menu>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    Super CRM
+
+
+                <Typography variant="h6" component="div">
+                    <Button color="inherit" component={Link} to="/">
+                        Home
+                    </Button>
                 </Typography>
+                <Button color="inherit" component={Link} to="/opportunities">
+                    Opportunities
+                </Button>
+                <Button color="inherit" component={Link} to="/customers">
+                    Customers
+                </Button>
+                <Button color="inherit" component={Link} to="/contacts">
+                    Contacts
+                </Button>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    {/* Super CRM */}
+                </Typography>
+
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Typography variant="body1" component="div" sx={{ mr: 2 }}>
                         {username}
@@ -99,20 +116,12 @@ const MyAppBar: React.FC<MyAppBarProps> = ({ username, onLogout }) => {
                         <MenuItem onClick={onLogout}>Logout</MenuItem>
                     </Menu>
                 </Box>
-{/* 
-                <Button color="inherit" component={Link} to="/opportunities">
-                    Opportunities
-                </Button>
-                <Button color="inherit" component={Link} to="/customers">
-                    Customers
-                </Button>
-                <Button color="inherit" component={Link} to="/accounts">
-                    Accounts
-                </Button> */}
+
+
 
             </Toolbar>
         </AppBar>
     );
 };
 
-export default MyAppBar;
+export default NavBar;

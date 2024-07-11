@@ -27,7 +27,11 @@ const schema = a.schema({
       index("accountId")
         .sortKeys(["name"]),
     ])
-    .authorization(allow => [allow.authenticated()]),
+    .authorization(allow => [
+      allow.group('admin').to(['create']),
+      // allow.publicApiKey().to(['create']),
+      allow.authenticated().to(['read']),
+    ]),
   // .authorization(allow => [allow.publicApiKey()])
   Customer: a.model({
     name: a.string(),

@@ -44,28 +44,10 @@ const OpportunityForm: React.FC<OpportunityFormProps> = ({ onOpportunitySaved })
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            // await DataStore.save(
-            //     client.models.Opportunity.create({
-            //         name,
-            //         description,
-            //         stage,
-            //         amount,
-            //         accountId,
-            //     })
-            // );
-
-            // const { data: customer } = await client.models.Customer.listCustomerByNameAndEmail({
-            //     name: "Adam",
-            //     // name: {
-            //     //     beginsWith: "adam@gmail.com",
-            //     // },
-            // });
             const { data: customer } = await client.models.Customer.create({
                 name: "Adam",
                 email: 'test@gmail.com'
             })
-
-
 
             const { data: opportunity } = await client.models.Opportunity.create({
                 name,
@@ -75,9 +57,6 @@ const OpportunityForm: React.FC<OpportunityFormProps> = ({ onOpportunitySaved })
                 accountId: '111',
                 customerId: customer?.id
             })
-
-
-
 
 
             // client.models.Opportunity.list({sor})

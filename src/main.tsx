@@ -6,13 +6,16 @@ import { Amplify } from "aws-amplify";
 import outputs from "../amplify_outputs.json";
 import { initializeInAppMessaging } from 'aws-amplify/in-app-messaging';
 
+import '@aws-amplify/ui-react/styles.css';
+import { ThemeProvider } from '@aws-amplify/ui-react';
+
 
 Amplify.configure(outputs);
 
 initializeInAppMessaging();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <ThemeProvider>
     <App />
-  </React.StrictMode>
+  </ThemeProvider>
 );

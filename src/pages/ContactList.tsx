@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Schema } from '../amplify/data/resource';
+// import { Schema } from '@amplify/data/resource';
+import { Schema} from '../../amplify/data/resource';
 import {
     Table,
     TableBody,
@@ -15,8 +16,10 @@ import {
     DialogActions,
 } from '@mui/material';
 import { generateClient } from "aws-amplify/data";
-import OpportunityForm from './OpportunityForm';
+// import OpportunityForm from '../OpportunityForm';
 
+const MODULE_LABEL = "Contacts";
+const CREATE_BUTTON_LABEL = "Create contact";
 
 // interface OpportunityTableProps {
 //   opportunities: Array<Schema['Opportunity']['type']>;
@@ -53,7 +56,7 @@ const OpportunityTable: React.FC = ({ }) => {
                         float: 'left',
                         marginLeft: '20px',
                     }}
-                >Opportunities</h1>
+                >{ MODULE_LABEL }</h1>
 
                 <Button
                     variant="contained"
@@ -66,7 +69,7 @@ const OpportunityTable: React.FC = ({ }) => {
                         marginRight: '20px',
                     }}
                 >
-                    Create Opportunity
+                    {CREATE_BUTTON_LABEL}
                 </Button>
                 <Table sx={{ width: '100%' }}>
                     <TableHead>
@@ -93,7 +96,7 @@ const OpportunityTable: React.FC = ({ }) => {
             <Dialog open={isPopupOpen} onClose={handleClosePopup} maxWidth="sm" fullWidth>
                 {/* <DialogTitle>Create Opportunity</DialogTitle> */}
                 <DialogContent>
-                    <OpportunityForm onOpportunitySaved={handleClosePopup} />
+                    {/* <OpportunityForm onOpportunitySaved={handleClosePopup} /> */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClosePopup} color="primary">

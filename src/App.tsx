@@ -1,11 +1,19 @@
 import React from 'react';
-
 import AmplifyTheme from './AmplifyTheme';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { withAuthenticator } from '@aws-amplify/ui-react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import OpportunityTable from './OpportunityTable';
-import MyAppBar from './AppBar';
+// import OpportunityTable from './OpportunityTable';
+// import { CustomerCreateForm } from "../ui-components"
+// import { CustomerCreateForm, OpportunityCreateForm } from "../ui-components";
+
+
+import NavBar from '../ui-components/NavBar';
+import Home from './pages/Home';
+import OpportunityList from './pages/OpportunityList';
+import CustomerList from './pages/CustomerList';
+import ContactList from './pages/ContactList';
 
 
 
@@ -14,8 +22,15 @@ const App: React.FC = () => {
     <Authenticator>
       {({ signOut, user }) => (
         <div>
-          <MyAppBar username={user?.signInDetails?.loginId} onLogout={signOut} />
-          <OpportunityTable />
+          <Router>
+            <NavBar username={user?.signInDetails?.loginId} onLogout={signOut} />
+            <Routes>
+              <Route path="/" Component={Home} />
+              <Route path="/opportunities" Component={OpportunityList} />
+              <Route path="/customers" Component={CustomerList} />
+              <Route path="/contacts" Component={ContactList} />
+            </Routes>
+          </Router>
         </div>
       )}
     </Authenticator>
