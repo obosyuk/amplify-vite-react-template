@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {fetchUserAttributes, fetchAuthSession } from '@aws-amplify/auth';
+import { fetchUserAttributes, fetchAuthSession } from '@aws-amplify/auth';
 // import { Schema } from '@amplify/data/resource';
 // import { Schema} from '../amplify/data/resource';
-import { Schema} from '../../amplify/data/resource';
+import { Schema } from '../../amplify/data/resource';
 import {
     Table,
     TableBody,
@@ -29,12 +29,20 @@ const CREATE_BUTTON_LABEL = "Create opportunity";
 // }
 const client = generateClient<Schema>();
 
+
+
 const OpportunityTable: React.FC = ({ }) => {
 
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [opportunities, setOpportunities] = useState<Array<Schema["Opportunity"]["type"]>>([]);
     const [selectedOpportunity, setSelectedOpportunity] = useState<Schema["Opportunity"]["type"] | null>(null);
     const [isAdmin, setIsAdmin] = useState(false);
+
+    client.queries.sayHello({
+        name: "Amplify",
+    })
+        .then((result) => console.log(result.data));
+
 
 
     const handleOpenPopup = (opportunity?: Schema["Opportunity"]["type"]) => {
@@ -64,7 +72,7 @@ const OpportunityTable: React.FC = ({ }) => {
                 fetchUserAttributes().then((user) => {
                     console.log('user email = ' + user.email);
                     console.log('user profile = ' + user.profile);
-                  });
+                });
 
                 fetchAuthSession().then((session) => {
                     console.log('session111:' + session.userSub);
