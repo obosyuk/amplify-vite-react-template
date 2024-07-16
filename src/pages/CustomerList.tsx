@@ -14,6 +14,8 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
+    Alert,
+    AlertTitle
 } from '@mui/material';
 import { generateClient } from "aws-amplify/data";
 import CustomerCreateForm from '../../ui-components/CustomerCreateForm';
@@ -32,12 +34,30 @@ const CustomerList: React.FC = ({ }) => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [customers, setOpportunities] = useState<Array<Schema["Customer"]["type"]>>([]);
 
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+
+    const showFormError = (error: string) => {
+        setErrorMessage(error);
+        setSuccessMessage(null);
+    };
+
+    const showFormSuccess = () => {
+        setSuccessMessage('Opportunity created successfully');
+        setErrorMessage(null);
+        setIsPopupOpen(false);  // Close popup on success
+    };
+
+
     const handleOpenPopup = () => {
         setIsPopupOpen(true);
     };
 
     const handleClosePopup = () => {
         setIsPopupOpen(false);
+        setErrorMessage(null);  
+        setSuccessMessage(null);
     };
 
 
@@ -97,7 +117,19 @@ const CustomerList: React.FC = ({ }) => {
             <Dialog open={isPopupOpen} onClose={handleClosePopup} maxWidth="sm" fullWidth>
                 <DialogTitle>{CREATE_BUTTON_LABEL}</DialogTitle>
                 <DialogContent>
-                    <CustomerCreateForm />
+                {errorMessage && (
+                        <Alert severity="error">
+                            <AlertTitle>Error</AlertTitle>
+                            {errorMessage}
+                        </Alert>
+                    )}
+                    {successMessage && (
+                        <Alert severity="success">
+                            <AlertTitle>Success</AlertTitle>
+                            {successMessage}
+                        </Alert>
+                    )}
+                    <CustomerCreateForm onError={(fields, errorMessage) => showFormError(errorMessage)} onSuccess={showFormSuccess} />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClosePopup} color="primary">

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUserAttributes, fetchAuthSession } from '@aws-amplify/auth';
-// import { Schema } from '@amplify/data/resource';
-// import { Schema} from '../amplify/data/resource';
 import { Schema } from '../../amplify/data/resource';
 import {
     Table,
@@ -16,9 +14,13 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
+    Alert,
+    AlertTitle,
+    Box,
+    TextField,
+    Grid
 } from '@mui/material';
 import { generateClient } from "aws-amplify/data";
-// import OpportunityForm from '../OpportunityForm';
 import OpportunityCreateForm from '../../ui-components/OpportunityCreateForm';
 
 const MODULE_LABEL = "Opportunities";
@@ -38,9 +40,30 @@ const OpportunityTable: React.FC = ({ }) => {
     const [selectedOpportunity, setSelectedOpportunity] = useState<Schema["Opportunity"]["type"] | null>(null);
     const [isAdmin, setIsAdmin] = useState(false);
 
-    client.queries.sayHello({
-        name: "Amplify",
-    })
+    const [filterName, setFilterName] = useState('');
+    const [filterStage, setFilterStage] = useState('');
+    const [filterAmount, setFilterAmount] = useState('');
+
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+
+    const showFormError = (error: string) => {
+        setErrorMessage(error);
+        setSuccessMessage(null);
+    };
+
+    const showFormSuccess = () => {
+        setSuccessMessage('Opportunity created successfully');
+        setErrorMessage(null);
+        setIsPopupOpen(false);  // Close popup on success
+    };
+
+
+    client.queries
+        .sayHello({
+            name: "Amplify",
+        })
         .then((result) => console.log(result.data));
 
 
@@ -54,74 +77,161 @@ const OpportunityTable: React.FC = ({ }) => {
         setIsPopupOpen(true);
     };
 
-    // const handleOpenPopup = () => {
-    //     setIsPopupOpen(true);
-    // };
-
     const handleClosePopup = () => {
         setIsPopupOpen(false);
+        setErrorMessage(null);
+        setSuccessMessage(null);
     };
 
+    const handleFilterNameChange = (event) => {
+        setFilterName(event.target.value);
+    };
+
+    const handleFilterStageChange = (event) => {
+        setFilterStage(event.target.value);
+    };
+
+    const handleFilterAmountChange = (event) => {
+        setFilterAmount(event.target.value);
+    };
+
+    const applyFilters = () => {
+        console.log('Applying filters');
+        fetchOpportunities();
+        let filteredOpportunities = opportunities;
+
+        if (filterName) {
+            filteredOpportunities = filteredOpportunities.filter(opportunity =>
+                opportunity.name.toLowerCase().includes(filterName.toLowerCase())
+            );
+        }
+
+        if (filterStage) {
+            filteredOpportunities = filteredOpportunities.filter(opportunity =>
+                opportunity.stage.toLowerCase().includes(filterStage.toLowerCase())
+            );
+        }
+
+        if (filterAmount) {
+            filteredOpportunities = filteredOpportunities.filter(opportunity =>
+                opportunity.amount.toString().includes(filterAmount)
+            );
+        }
+
+        // return filteredOpportunities;
+        setOpportunities([...filteredOpportunities])
+    };
+
+
     useEffect(() => {
-        client.models.Opportunity.observeQuery().subscribe({
-            next: (data) => setOpportunities([...data.items]),
-        });
+        // client.models.Opportunity.observeQuery().subscribe({
+        //     next: (data) => setOpportunities([...data.items]),
+        // });
 
-        const checkUserGroup = async () => {
-            try {
-                fetchUserAttributes().then((user) => {
-                    console.log('user email = ' + user.email);
-                    console.log('user profile = ' + user.profile);
-                });
+        // const checkUserGroup = async () => {
+        //     try {
+        //         fetchUserAttributes().then((user) => {
+        //             console.log('user email = ' + user.email);
+        //             console.log('user profile = ' + user.profile);
+        //         });
 
-                fetchAuthSession().then((session) => {
-                    console.log('session111:' + session.userSub);
-                    console.log('session at:' + session.tokens?.accessToken.payload['cognito:groups']);
-                    console.log('session it:' + session.tokens?.idToken?.payload['cognito:groups']);
-                })
+        //         fetchAuthSession().then((session) => {
+        //             console.log('session111:' + session.userSub);
+        //             console.log('session at:' + session.tokens?.accessToken.payload['cognito:groups']);
+        //             console.log('session it:' + session.tokens?.idToken?.payload['cognito:groups']);
+        //         })
 
-                // const user = await Auth.currentAuthenticatedUser();
-                // const groups = user.signInUserSession.accessToken.payload["cognito:groups"];
-                // setIsAdmin(groups && groups.includes('admin'));
-            } catch (error) {
-                console.error("Error fetching user groups:", error);
-            }
-        };
+        //         // const user = await Auth.currentAuthenticatedUser();
+        //         // const groups = user.signInUserSession.accessToken.payload["cognito:groups"];
+        //         // setIsAdmin(groups && groups.includes('admin'));
+        //     } catch (error) {
+        //         console.error("Error fetching user groups:", error);
+        //     }
+        // };
 
-        checkUserGroup();
+        // checkUserGroup();
     }, []);
 
-
-    useEffect(() => {
+    const fetchOpportunities = () => {
         client.models.Opportunity.observeQuery().subscribe({
             next: (data) => setOpportunities([...data.items]),
         });
+    }
+
+    useEffect(() => {
+        fetchOpportunities();
     }, []);
 
 
     return (
         <>
             <TableContainer component={Paper} sx={{ mt: 4, width: '100%' }}>
-                <h1
-                    style={{
-                        position: 'relative',
-                        float: 'left',
-                        marginLeft: '20px',
-                    }}
-                >{MODULE_LABEL}</h1>
 
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleOpenPopup()}
-                    style={{
-                        position: 'relative',
-                        float: 'right',
-                        marginRight: '20px',
-                    }}
-                >
-                    {CREATE_BUTTON_LABEL}
-                </Button>
+                <Grid container spacing={2}>
+                    <Grid item xs={8}>
+                        <h1
+                            style={{
+                                marginLeft: '20px',
+                            }}
+                        >{MODULE_LABEL}</h1>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleOpenPopup()}
+                            style={{
+                                position: 'relative',
+                                float: 'right',
+                                marginRight: '20px',
+                            }}
+                        >
+                            {CREATE_BUTTON_LABEL}
+                        </Button>
+                    </Grid>
+                    {/* <Grid item xs={4}>
+                        xs=4
+                    </Grid>
+                    <Grid item xs={8}>
+                        xs=8
+                    </Grid> */}
+                </Grid>
+
+
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, px: 2 }}>
+                    <TextField
+                        label="Filter by Name"
+                        value={filterName}
+                        onChange={handleFilterNameChange}
+                        variant="outlined"
+                        size="small"
+                        sx={{ mr: 2 }}
+                    />
+                    <TextField
+                        label="Filter by Stage"
+                        value={filterStage}
+                        onChange={handleFilterStageChange}
+                        variant="outlined"
+                        size="small"
+                        sx={{ mr: 2 }}
+                    />
+                    <TextField
+                        label="Filter by Amount"
+                        value={filterAmount}
+                        onChange={handleFilterAmountChange}
+                        variant="outlined"
+                        size="small"
+                    />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={applyFilters}
+                        sx={{ ml: 2 }}
+                    >
+                        Apply Filters
+                    </Button>
+                </Box>
+
                 <Table sx={{ width: '100%' }}>
                     <TableHead>
                         <TableRow>
@@ -147,6 +257,19 @@ const OpportunityTable: React.FC = ({ }) => {
             <Dialog open={isPopupOpen} onClose={handleClosePopup} maxWidth="sm" fullWidth>
                 <DialogTitle>{selectedOpportunity ? `Details of ${selectedOpportunity.name}` : CREATE_BUTTON_LABEL}</DialogTitle>
                 <DialogContent>
+                    {errorMessage && (
+                        <Alert severity="error">
+                            <AlertTitle>Error</AlertTitle>
+                            {errorMessage}
+                        </Alert>
+                    )}
+                    {successMessage && (
+                        <Alert severity="success">
+                            <AlertTitle>Success</AlertTitle>
+                            {successMessage}
+                        </Alert>
+                    )}
+
                     {selectedOpportunity ? (
                         <div>
                             <p><strong>Name:</strong> {selectedOpportunity.name}</p>
@@ -161,7 +284,7 @@ const OpportunityTable: React.FC = ({ }) => {
                             {/* <p><strong>Customer:</strong> {selectedOpportunity.customer.toString()}</p> */}
                         </div>
                     ) : (
-                        <OpportunityCreateForm />
+                        <OpportunityCreateForm onError={(fields, errorMessage) => showFormError(errorMessage)} onSuccess={showFormSuccess} />
                     )}
                 </DialogContent>
                 <DialogActions>
