@@ -68,6 +68,10 @@ const OpportunityTable: React.FC = ({ }) => {
         })
         .then((result) => console.log(result.data));
 
+    
+    client.queries.fetchObjects()
+    .then((result) => console.log(result.data));
+
 
 
     const handleOpenPopup = (opportunity?: Schema["Opportunity"]["type"]) => {
