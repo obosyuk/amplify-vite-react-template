@@ -2,7 +2,6 @@ import { defineBackend } from '@aws-amplify/backend';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
 import { sayHello } from './functions/say-hello/resource';
-import { fetchObjects } from './functions/fetch-objects/resource';
 import { sendEmails } from './functions/send-emails/resource';
 
 import * as cdk from 'aws-cdk-lib';
@@ -17,7 +16,6 @@ const backend = defineBackend({
   auth,
   data,
   sayHello,
-  fetchObjects,
   sendEmails
 });
 
@@ -52,4 +50,10 @@ const rule = new events.Rule(
 // Add the lambda function as a target for the rule
 rule.addTarget(
   new targets.LambdaFunction(backend.sendEmails.resources.lambda),
+);
+
+// For an external HTTP endpoint
+backend.data.addHttpDataSource(
+  "DeviceHttpDataSource",
+  "https://api.restful-api.dev"
 );

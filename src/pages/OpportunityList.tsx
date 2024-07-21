@@ -62,17 +62,6 @@ const OpportunityTable: React.FC = ({ }) => {
     };
 
 
-    client.queries
-        .sayHello({
-            name: "Amplify",
-        })
-        .then((result) => console.log(result.data));
-
-    
-    client.queries.fetchObjects()
-    .then((result) => console.log(result.data));
-
-
 
     const handleOpenPopup = (opportunity?: Schema["Opportunity"]["type"]) => {
         if (opportunity) {
