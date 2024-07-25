@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUserAttributes, updateUserAttributes } from 'aws-amplify/auth';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import {
-    Box,
-    TextField,
-    Button,
-    Typography,
-    Card,
-    Snackbar,
-    Alert,
-    CircularProgress,
-} from '@mui/material';
+import { Box, TextField, Button, Typography, Card, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import ChangePasswordForm from '../../ui-components/ChangePasswordForm'; 
 
 interface UserProfile {
     email: string;
@@ -18,20 +10,17 @@ interface UserProfile {
     firstName: string;
     lastName: string;
     phoneNumber: string;
-    [key: string]: any;
 }
 
 const ProfileForm: React.FC = () => {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<UserProfile>();
     const [user, setUser] = useState<any>(null);
-    const [open, setOpen] = useState(false);
-    const [message, setMessage] = useState('');
-    const [severity, setSeverity] = useState<'success' | 'error'>('success');
-    const [loading, setLoading] = useState(false); // State for loader
+    const [loading, setLoading] = useState(false);
+    const [openPasswordModal, setOpenPasswordModal] = useState(false);
 
     useEffect(() => {
         async function fetchUser() {
-            setLoading(true); // Show loader
+            setLoading(true);
             try {
                 const userInfo = await fetchUserAttributes();
                 setUser(userInfo);
@@ -44,7 +33,7 @@ const ProfileForm: React.FC = () => {
             } catch (error) {
                 console.error('Error fetching user info:', error);
             } finally {
-                setLoading(false); // Hide loader
+                setLoading(false);
             }
         }
 
@@ -52,7 +41,7 @@ const ProfileForm: React.FC = () => {
     }, [setValue]);
 
     const onSubmit: SubmitHandler<UserProfile> = async (data) => {
-        setLoading(true); // Show loader
+        setLoading(true);
         try {
             await updateUserAttributes({
                 userAttributes: {
@@ -63,28 +52,20 @@ const ProfileForm: React.FC = () => {
                     phone_number: data.phoneNumber,
                 },
             });
-            setMessage('Profile updated successfully!');
-            setSeverity('success');
-            setOpen(true);
+            alert('Profile updated successfully!');
         } catch (error) {
             console.error('Error updating profile:', error);
-            setMessage('Error updating profile');
-            setSeverity('error');
-            setOpen(true);
+            alert('Error updating profile');
         } finally {
-            setLoading(false); // Hide loader
+            setLoading(false);
         }
     };
 
-    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpen(false);
-    };
+    const handleOpenPasswordModal = () => setOpenPasswordModal(true);
+    const handleClosePasswordModal = () => setOpenPasswordModal(false);
 
     return (
-        <Card variant="outlined" sx={{ maxWidth: 800, maxHeight: 800, margin: '0 auto', marginTop: '100px'}}>
+        <Card variant="outlined" sx={{ maxWidth: 800, maxHeight: 800, margin: '0 auto', marginTop: '100px' }}>
             <Box sx={{ padding: '80px', position: 'relative' }}>
                 <Typography variant="h4" component="h1" gutterBottom>
                     User Profile
@@ -178,6 +159,9 @@ const ProfileForm: React.FC = () => {
                     <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={loading}>
                         {loading ? 'Updating...' : 'Update Profile'}
                     </Button>
+                    <Button variant="outlined" color="secondary" fullWidth sx={{ mt: 2 }} onClick={handleOpenPasswordModal}>
+                        Change Password
+                    </Button>
                 </form>
                 {loading && (
                     <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
@@ -185,17 +169,20 @@ const ProfileForm: React.FC = () => {
                     </Box>
                 )}
             </Box>
-            <Snackbar
-                open={open}
-                autoHideDuration={6000}
-                onClose={handleClose}
-                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                sx={{ marginTop: '80px' }}
-            >
-                <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
-                    {message}
-                </Alert>
-            </Snackbar>
+            <Dialog open={openPasswordModal} onClose={handleClosePasswordModal}>
+                <DialogTitle>Change Password</DialogTitle>
+                <DialogContent>
+                    <ChangePasswordForm onSuccess={() => {
+                        alert('Password updated successfully!');
+                        handleClosePasswordModal();
+                    }} />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClosePasswordModal} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Card>
     );
 };

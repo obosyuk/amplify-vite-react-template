@@ -18,7 +18,6 @@ import UserProfile from './pages/UserProfile';
 
 
 
-
 const App: React.FC = () => {
   return (
     <Authenticator>
