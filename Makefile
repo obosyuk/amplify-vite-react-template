@@ -9,5 +9,8 @@ run:
 sandbox:
 	npx ampx sandbox
 
+rm-sandbox:
+	npx ampx sandbox delete
+
 generate-forms:
 	npx ampx generate forms

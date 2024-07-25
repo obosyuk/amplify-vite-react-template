@@ -6,6 +6,22 @@ import { defineAuth } from '@aws-amplify/backend';
  */
 export const auth = defineAuth({
   loginWith: {
-    email: true,
+    email: {
+      verificationEmailStyle: "CODE",
+      verificationEmailSubject: "Welcome to SuperApp!",
+      verificationEmailBody: (createCode) => `Use this code to confirm your account in SuperApp: ${createCode()}`,
+    },
+  },
+
+  multifactor: {
+    mode: 'REQUIRED',
+    totp: true
+  },
+
+  userAttributes: {
+    birthdate: {
+      mutable: true,
+      required: true,
+    }
   },
 });

@@ -36,8 +36,6 @@ const schema = a.schema({
     ]),
   // .authorization(allow => [allow.publicApiKey()])
 
-
-
   Customer: a.model({
     name: a.string(),
     email: a.email(),
@@ -63,8 +61,9 @@ const schema = a.schema({
 
 
 
-
-  // For an external HTTP endpoint
+  ////////////////////////////////////////////////////////////////
+  //                For an external HTTP endpoint
+  ////////////////////////////////////////////////////////////////
   // Data types
   DeviceData: a.customType({
     id: a.string(),
@@ -133,7 +132,7 @@ const schema = a.schema({
     .authorization(allow => [allow.authenticated()])
     .handler(
       a.handler.custom({
-        dataSource: "HttpDataSource",
+        dataSource: "DeviceHttpDataSource",
         entry: "./device/addDevice.js",
       })
     ),
@@ -150,7 +149,7 @@ const schema = a.schema({
     .authorization(allow => [allow.authenticated()])
     .handler(
       a.handler.custom({
-        dataSource: "HttpDataSource",
+        dataSource: "DeviceHttpDataSource",
         entry: "./device/updateDevice.js",
       })
     ),
@@ -162,7 +161,7 @@ const schema = a.schema({
     .authorization(allow => [allow.authenticated()])
     .handler(
       a.handler.custom({
-        dataSource: "HttpDataSource",
+        dataSource: "DeviceHttpDataSource",
         entry: "./device/deleteDevice.js",
       })
     ),
