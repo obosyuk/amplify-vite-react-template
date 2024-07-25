@@ -57,3 +57,17 @@ backend.data.addHttpDataSource(
   "DeviceHttpDataSource",
   "https://api.restful-api.dev"
 );
+
+// extract L1 CfnUserPool resources
+const { cfnUserPool } = backend.auth.resources.cfnResources;
+// modify cfnUserPool policies directly
+cfnUserPool.policies = {
+  passwordPolicy: {
+    minimumLength: 10,
+    requireLowercase: true,
+    requireNumbers: true,
+    requireSymbols: true,
+    requireUppercase: true,
+    temporaryPasswordValidityDays: 20,
+  },
+};
