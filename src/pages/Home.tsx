@@ -1,14 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Schema } from '../../amplify/data/resource';
 
 import { generateClient } from "aws-amplify/data";
+import { fetchUserAttributes } from 'aws-amplify/auth';
 
 
 const client = generateClient<Schema>();
 
 
-
 const Home: React.FC = () => {
+
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const userData = await fetchUserAttributes();
+        setUser(userData);
+        console.log(userData.email);
+        console.log(userData.birthdate);
+      } catch (error) {
+        console.error('Error fetching user attributes:', error);
+      }
+    }
+    
+    fetchData();
+  }, []);
 
   // client.queries.getDevice({ id: "1" })
   //   // .then((result) => console.log(JSON.parse(result.data)))
@@ -28,7 +45,14 @@ const Home: React.FC = () => {
   //   .then((result) => console.log(result))
   //   .catch((error) => console.log(error));
 
+  
+
   client.mutations.deleteDevice({ id: "ff80818190d0ec2e0190d4bc6dfa024a" })
+    .then((result) => console.log(result.data))
+    .catch((error) => console.log(error));
+
+    
+  client.queries.sayHello({name: 'd'})
     .then((result) => console.log(result.data))
     .catch((error) => console.log(error));
 

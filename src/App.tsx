@@ -14,6 +14,7 @@ import Home from './pages/Home';
 import OpportunityList from './pages/OpportunityList';
 import CustomerList from './pages/CustomerList';
 import ContactList from './pages/ContactList';
+import UserProfile from './pages/UserProfile';
 
 
 
@@ -30,6 +31,7 @@ const App: React.FC = () => {
               <Route path="/opportunities" Component={OpportunityList} />
               <Route path="/customers" Component={CustomerList} />
               <Route path="/contacts" Component={ContactList} />
+              <Route path="/current-user" Component={UserProfile} />
             </Routes>
           </Router>
         </div>

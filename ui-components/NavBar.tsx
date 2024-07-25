@@ -111,8 +111,8 @@ const NavBar: React.FC<NavBarProps> = ({ username, onLogout }) => {
                         open={Boolean(rightAnchorEl)}
                         onClose={handleRightMenuClose}
                     >
-                        <MenuItem onClick={handleRightMenuClose}>Profile</MenuItem>
-                        <MenuItem onClick={handleRightMenuClose}>My account</MenuItem>
+                        <MenuItem onClick={handleRightMenuClose} component={Link} to="/current-user">My Profile</MenuItem>
+                        {/* <MenuItem onClick={handleRightMenuClose}>My account</MenuItem> */}
                         <MenuItem onClick={onLogout}>Logout</MenuItem>
                     </Menu>
                 </Box>
