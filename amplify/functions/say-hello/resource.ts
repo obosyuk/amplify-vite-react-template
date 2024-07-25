@@ -8,5 +8,7 @@ export const sayHello = defineFunction({
   environment: {
     NAME: 'World',
     // API_ENDPOINT: process.env.API_ENDPOINT
-  }
+  },
+  timeoutSeconds: 10,
+  memoryMB: 128,
 });
