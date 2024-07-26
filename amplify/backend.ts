@@ -9,14 +9,21 @@ import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 import * as iam from '@aws-cdk/aws-iam';
 import { Stack } from "aws-cdk-lib";
-import { PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { Stream } from "aws-cdk-lib/aws-kinesis";
+import { StartingPosition } from "aws-cdk-lib/aws-lambda";
+import { KinesisEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
+import { myKinesisFunction } from "./functions/kinesis-function/resource";
+import { Policy, PolicyStatement } from "aws-cdk-lib/aws-iam";
+
+
 
 
 const backend = defineBackend({
   auth,
   data,
   sayHello,
-  sendEmails
+  sendEmails,
+  myKinesisFunction,
 });
 
 // const stack = new Stack();
@@ -71,3 +78,29 @@ cfnUserPool.policies = {
     temporaryPasswordValidityDays: 20,
   },
 };
+
+
+
+// Kinesis Data Stream integration
+const kinesisStack = backend.createStack("kinesis-stack");
+
+const kinesisStream = new Stream(kinesisStack, "KinesisStream", {
+  streamName: "myKinesisStream",
+  shardCount: 1,
+});
+
+const eventSource = new KinesisEventSource(kinesisStream, {
+  startingPosition: StartingPosition.LATEST,
+  reportBatchItemFailures: true,
+});
+
+backend.myKinesisFunction.resources.lambda.addEventSource(eventSource);
+
+const kinesisPolicy = new PolicyStatement({
+  actions: [
+    "kinesis:PutRecords",
+  ],
+  resources: [kinesisStream.streamArn],
+});
+backend.auth.resources.authenticatedUserIamRole.addToPrincipalPolicy(kinesisPolicy);
+backend.auth.resources.unauthenticatedUserIamRole.addToPrincipalPolicy(kinesisPolicy);

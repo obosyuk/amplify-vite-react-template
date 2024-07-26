@@ -3,6 +3,7 @@ import { Schema } from '../../amplify/data/resource';
 
 import { generateClient } from "aws-amplify/data";
 import { fetchUserAttributes } from 'aws-amplify/auth';
+import { record } from 'aws-amplify/analytics/kinesis';
 
 
 const client = generateClient<Schema>();
@@ -11,6 +12,15 @@ const client = generateClient<Schema>();
 const Home: React.FC = () => {
 
   const [user, setUser] = useState();
+
+
+  record({
+    data: {
+      hello: 'world!!!'
+    },
+    partitionKey: 'myPartitionKey',
+    streamName: 'myKinesisStream'
+  });
 
   useEffect(() => {
     async function fetchData() {
