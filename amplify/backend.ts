@@ -14,13 +14,14 @@ import { StartingPosition } from "aws-cdk-lib/aws-lambda";
 import { KinesisEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import { myKinesisFunction } from "./functions/kinesis-function/resource";
 import { Policy, PolicyStatement } from "aws-cdk-lib/aws-iam";
-
+import { storage } from './storage/resource';
 
 
 
 const backend = defineBackend({
   auth,
   data,
+  storage,
   sayHello,
   sendEmails,
   myKinesisFunction,

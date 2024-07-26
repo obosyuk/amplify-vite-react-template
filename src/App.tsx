@@ -15,6 +15,7 @@ import OpportunityList from './pages/OpportunityList';
 import CustomerList from './pages/CustomerList';
 import ContactList from './pages/ContactList';
 import UserProfile from './pages/UserProfile';
+import UploadFile from './pages/UploadFile';
 
 
 
@@ -31,6 +32,7 @@ const App: React.FC = () => {
               <Route path="/customers" Component={CustomerList} />
               <Route path="/contacts" Component={ContactList} />
               <Route path="/current-user" Component={UserProfile} />
+              <Route path="/upload-file" Component={UploadFile} />
             </Routes>
           </Router>
         </div>

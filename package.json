@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.1.9",
+    "@aws-amplify/ui-react-storage": "^3.1.6",
     "@aws-cdk/aws-dynamodb": "^1.204.0",
     "@aws-cdk/aws-iam": "^1.204.0",
     "@aws-sdk/client-dynamodb": "^3.614.0",
@@ -23,7 +24,7 @@
     "@mui/material": "^5.16.3",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "@mui/x-data-grid": "^7.10.0",
-    "aws-amplify": "^6.2.0",
+    "aws-amplify": "^6.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.25.0",

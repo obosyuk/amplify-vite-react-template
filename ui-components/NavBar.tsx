@@ -77,6 +77,9 @@ const NavBar: React.FC<NavBarProps> = ({ username, onLogout }) => {
                 <Button color="inherit" component={Link} to="/contacts">
                     Contacts
                 </Button>
+                <Button color="inherit" component={Link} to="/upload-file">
+                    Files
+                </Button>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     {/* Super CRM */}
                 </Typography>
