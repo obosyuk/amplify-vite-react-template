@@ -82,26 +82,28 @@ cfnUserPool.policies = {
 
 
 
+// UNCOMMENT WHEN IT'S NEEDED
+
 // Kinesis Data Stream integration
-const kinesisStack = backend.createStack("kinesis-stack");
+// const kinesisStack = backend.createStack("kinesis-stack");
 
-const kinesisStream = new Stream(kinesisStack, "KinesisStream", {
-  streamName: "myKinesisStream",
-  shardCount: 1,
-});
+// const kinesisStream = new Stream(kinesisStack, "KinesisStream", {
+//   streamName: "myKinesisStream",
+//   shardCount: 1,
+// });
 
-const eventSource = new KinesisEventSource(kinesisStream, {
-  startingPosition: StartingPosition.LATEST,
-  reportBatchItemFailures: true,
-});
+// const eventSource = new KinesisEventSource(kinesisStream, {
+//   startingPosition: StartingPosition.LATEST,
+//   reportBatchItemFailures: true,
+// });
 
-backend.myKinesisFunction.resources.lambda.addEventSource(eventSource);
+// backend.myKinesisFunction.resources.lambda.addEventSource(eventSource);
 
-const kinesisPolicy = new PolicyStatement({
-  actions: [
-    "kinesis:PutRecords",
-  ],
-  resources: [kinesisStream.streamArn],
-});
-backend.auth.resources.authenticatedUserIamRole.addToPrincipalPolicy(kinesisPolicy);
-backend.auth.resources.unauthenticatedUserIamRole.addToPrincipalPolicy(kinesisPolicy);
+// const kinesisPolicy = new PolicyStatement({
+//   actions: [
+//     "kinesis:PutRecords",
+//   ],
+//   resources: [kinesisStream.streamArn],
+// });
+// backend.auth.resources.authenticatedUserIamRole.addToPrincipalPolicy(kinesisPolicy);
+// backend.auth.resources.unauthenticatedUserIamRole.addToPrincipalPolicy(kinesisPolicy);
